@@ -126,8 +126,7 @@ Extraction is a reviewed ledger, not an end-to-end model. With 17 documents and 
 be exact, precision matters more than automation. What is automatic, and reusable on another company,
 is everything around the ledger:
 
-- `actes detect` flags the pages worth reading (61 of 293) and the test suite checks that every page
-  the ledger cites is among them.
+- `actes detect` flags the pages worth reading (61 of 293) and the test suite checks that every page cited as an event's main source is among them.
 - It also parses every sentence that states a capital change or level (49 of them), and compares each
   with the replayed timeline: 34 corroborate an event, 13 state a level the timeline goes through,
   2 contradict it. Those 2 are the 185 759 above. An unexplained sentence fails the tests.
