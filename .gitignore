@@ -1,0 +1,9 @@
+.venv/
+upstream/
+proofs/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.env
+JOURNAL_AGENTS.md
+candidature/
