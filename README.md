@@ -241,7 +241,8 @@ written briefs of mine.
 **What I did myself.** I wrote the briefs: the scope, the evidence standard (every event checkable in
 its original page, no box invented to satisfy a validator), the four statuses, the rule that an entry,
 an exit and a transfer may describe one movement and must be applied once, the list of tests, the
-instruction to keep contradictions instead of resolving them, and the decision to submit.
+instruction to keep contradictions instead of resolving them, the reference projects to study, and the
+decision to submit.
 
 **What I delegated.** Reading the 17 filings and the related ones, the ledger, all the code, the tests,
 this README, the repository and the pull request. The agent also ran sub-agents: one web search (hiring
