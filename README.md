@@ -40,7 +40,8 @@ Each event and each state carries a `status`:
 - REFUTED is used in notes only, for a figure the documents themselves disprove.
 
 28 events are CONFIRMED and 11 SUPPORTED. 7 states are CONFIRMED, 4 SUPPORTED, 2 UNRESOLVED. A state is
-SUPPORTED as soon as one of its lines is carried forward from an older filing and not restated.
+SUPPORTED as soon as one of its lines is inferred, or carried forward from an older filing, rather than
+stated for that date.
 
 ## Where the documents disagree, or stop
 
@@ -169,7 +170,7 @@ pytest                           # 46 tests; those that read the corpus skip wit
 | each box sits on ink | box rendered from the PDF with PyMuPDF | pass |
 | each party is named in the passage cited for it | entries, exits, transfers | pass, 2 declared exceptions |
 | the replay on a hand-computable scenario | incorporation, entry, partial sale, total sale, increase | pass |
-| boxes checked by eye | 36 of the 85 proof images, across scans, A4 pages and tax forms | all on target |
+| boxes looked at on the rendered page (by the agent) | 36 of the 85 proof images, across scans, A4 pages and tax forms | all on target |
 
 A valid JSON is not a correct cap table. The schema is the first line of the table, not the argument.
 
@@ -260,8 +261,6 @@ machine-checked. The proof images exist so that anyone, including me, can check 
 
 **Where the tool was wrong, and what caught it.**
 
-- It first took Gicquel's "6,00 %" for an OCR misread. Looking at the scan showed the document prints
-  it. The finding moved from "OCR noise" to "error in the minutes".
 - Its first page triage flagged 20 pages or more per copy of the statutes, on vocabulary alone. It was
   rewritten to require operative wording with figures (61 pages of 293).
 - Three anchors matched two OCR lines (the attendance sheet prints each figure in two columns, and
@@ -270,10 +269,11 @@ machine-checked. The proof images exist so that anyone, including me, can check 
 - It marked as CONFIRMED several facts that are only inferred: the Capgras sale, three states that
   carry a holding forward, the completion of the 2008 increases by 15 July. The reviewers caught it.
   11 events and 4 states are now SUPPORTED.
-- It considered writing the 20 missing shares as an inferred transfer from Blanco to Aumont. No filing
-  shows one, so the state is marked restated and no event exists.
-- The first group build named two companies "NON RENSEIGNE" and one by a former name, taken from the
-  first registry entry. It now uses the most frequent denomination and the cover pages.
+- The first group build named one company "NON RENSEIGNE" and another by a different name, taken from
+  the first registry entry it met. It now uses the most frequent denomination, and the cover pages for
+  the two companies the registry leaves unnamed.
+- It once reported the eight reference commits as missing on GitHub: its own shell loop had not split
+  its arguments. Checked one by one, they exist.
 - A sub-agent advised turning on `jsonschema`'s format checker. The official schema declares no format,
   so it would have checked nothing; dates are checked by a rule in `validate.py`.
 
