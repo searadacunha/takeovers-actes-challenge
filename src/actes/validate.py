@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from collections import Counter
 from datetime import date
+import re
 
 from jsonschema import Draft202012Validator
 
@@ -16,7 +17,11 @@ INCREASE, DECREASE, TRANSFER = "CAPITAL_INCREASE", "CAPITAL_DECREASE", "SHAREHOL
 
 def _is_date(s) -> bool:
     try:
-        return isinstance(s, str) and len(s) == 10 and bool(date.fromisoformat(s))
+        return (
+            isinstance(s, str)
+            and bool(re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", s))
+            and bool(date.fromisoformat(s))
+        )
     except ValueError:
         return False
 
