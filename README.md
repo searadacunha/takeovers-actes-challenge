@@ -1,5 +1,7 @@
 # ARCHEAN TECHNOLOGIES: twenty years of capital, rebuilt from its filings
 
+<p align="center"><img src="assets/readme-hero.svg" width="100%" alt="takeovers-actes-challenge project banner" /></p>
+
 Submission for the Takeovers **Actes** challenge (Data / ML Engineer track), SIREN 480489707.
 `results.json` is at the root and validates against the official schema.
 
