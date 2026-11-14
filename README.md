@@ -152,7 +152,7 @@ python -m actes detect           # pages flagged, capital sentences cross-checke
 python -m actes build            # ledger -> results.json, refused if schema or invariants fail
 python -m actes proofs           # every cited box drawn on its page by the official bbox_viewer.py
 python -m actes lines <inpi_id> <page>   # OCR lines of a page with their normalized boxes
-pytest                           # 46 tests; those that read the corpus skip without it
+pytest                           # 56 tests collected; 8 corpus tests skip without the files
 ```
 
 ## What is verified, and how
