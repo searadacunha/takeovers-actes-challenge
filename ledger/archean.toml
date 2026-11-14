@@ -1,0 +1,1115 @@
+# Reviewed ledger for ARCHEAN TECHNOLOGIES (SIREN 480489707).
+#
+# One [[step]] = one cap-table state. Each [[step.event]] is a fact read in a filing, with the
+# document, the page and a few words copied from the OCR ("lines"). No coordinates are stored here:
+# `actes build` resolves the words to OCR line boxes and fails if they are not on the page.
+#
+# status   CONFIRMED   stated by the documents
+#          SUPPORTED   several concordant elements, proof incomplete
+#          UNRESOLVED  documents insufficient or contradictory
+# "?"      a figure the documents do not give (TOML has no null)
+
+siren = "480489707"
+company = "ARCHEAN TECHNOLOGIES"
+
+notes = """
+Capital chain (EUR): 37,000 at incorporation (statutes signed 15 Dec 2004) -> 150,000 (17 May 2005) -> 200,000
+(20 Oct 2006) -> 100-for-1 nominal split, then 217,241 and 368,102 (27 Jun 2008) -> 217,241 (21 Feb 2017) ->
+400,000 (23 Mar 2018), unchanged through the 2059-F tax form for the year ended 31 Dec 2024. HADEAN (SIREN
+499979540) has been sole shareholder since 21 Feb 2017.
+Every event and state carries a status: CONFIRMED (stated by a filing), SUPPORTED (concordant but incomplete),
+UNRESOLVED (documents insufficient or contradictory).
+What the filings do not let me settle:
+(1) May 2005: the six shareholders after the 113,000 increase are known, their individual counts are not
+(shares = null). The EGM of 4 Mar 2005 that decided the increase is not in the corpus.
+(2) Aug 2005 to Oct 2006: the EGM of 8 Aug 2005 records BLANCO 823 / AUMONT 617 / GICQUEL 60, the signed
+attendance sheet of 20 Oct 2006 records 803 / 637 / 60. No filing explains the 20 shares. I keep both states and
+do not invent a transfer. The 2007 HADEAN deed lists a single acquisition by AUMONT (16 Aug 2005), which fits
+637 better than 617.
+(3) The same 8 Aug 2005 table prints 6.00 % for 60 of 1,500 shares (4.00 %); its percentages add up to 102 %.
+(4) The 225-share sale AUMONT -> CAPGRAS was authorised on 20 Oct 2006; its execution date is not filed (at the
+latest 7 Sep 2007).
+(5) Antonio BLANCO MARINA's 953 shares reach HADEAN between 7 Sep 2007 and 27 Jun 2008 with no deed in the
+corpus: the transfer is inferred from HADEAN acting as sole shareholder on 27 Jun 2008.
+(6) The 27 Jun 2008 filing is an extract that omits resolutions 12 to 15 naming the subscribers. The four funds
+and their counts are back-projected from the 21 Feb 2017 buy-back list; the counts equal round tickets
+(375k, 250k, 175k, 75k EUR) at the 2008 price of 5.80 EUR and add up to the 150,861 B shares issued.
+(7) 23 Mar 2018: the decision says 182,759, the amended article 6 in the same minutes and in the updated
+statutes says 185,759. Only 182,759 reaches 400,000.
+(8) Smaller inconsistencies, with no effect on the cap table: the 2007 HADEAN deed says GICQUEL subscribed to the
+May 2005 increase although he holds 60 shares before and after it; the two reports of the commissioner for
+special benefits give different caps for the A-share dividend (18 June and 22 July 2008); the 2008 minutes split
+the B-share premium into two amounts that add up to the whole subscription price plus ten cents; the excess of the
+2017 buy-back price is charged to the share premium by the meeting and to other reserves by the president.
+(9) The 2006 and 2008 increases are dated by their decision. Their completion dates are not filed.
+Events grounded outside the subject's folder: the 2007 and 2008 contributions to HADEAN are in HADEAN's own
+filings (499979540). Next steps: pull the missing 4 Mar 2005 minutes, the full 27 Jun 2008 minutes and the share
+transfer register entries from INPI, and the BODACC notices for 2008.
+"""
+
+# ---------------------------------------------------------------------------- holders
+# Canonical names and the variants met in the filings. Matching is exact after removing case,
+# accents and punctuation: no fuzzy matching, so two different parties can never be merged.
+
+[holders."Xavier AUMONT"]
+kind = "PERSON"
+aliases = ["Xavier AUMANT"]
+
+[holders."Antonio BLANCO MARINA"]
+kind = "PERSON"
+aliases = ["Antonio BLANCO"]
+
+[holders."Franck GICQUEL"]
+kind = "PERSON"
+aliases = ["Franck, Charles GICQUEL", "Frank GICQUEL", "Franck GICOUEL"]
+
+[holders."Malik GUELLATI"]
+kind = "PERSON"
+aliases = ["Malik GUELLATTI"]
+
+[holders."Christophe LEROUX"]
+kind = "PERSON"
+
+[holders."Marielle ROUJEAN"]
+kind = "PERSON"
+
+[holders."Michel CAPGRAS"]
+kind = "PERSON"
+aliases = ["Michei CAPGRAS"]
+
+[holders.HADEAN]
+kind = "COMPANY"
+siren = "499979540"   # given in the 27 June 2008 minutes and in the 2059-F tax forms
+
+# Investment vehicles named only in the 2017 buy-back list. The filings give neither a legal form nor
+# a SIREN, so kind stays UNKNOWN and siren stays empty.
+[holders."FPCI SECURITE"]
+kind = "UNKNOWN"
+
+[holders."FIP GALIA PME 4"]
+kind = "UNKNOWN"
+
+[holders."GALIA VENTURE"]
+kind = "UNKNOWN"
+
+[holders."FPCI FINANCIERE DE BRIENNE"]
+kind = "UNKNOWN"
+
+# ---------------------------------------------------------------------------- discrepancies
+# Capital sentences that `actes detect` must flag, and nothing else. A new unexplained sentence fails
+# the test suite.
+
+[[discrepancy]]
+doc = "63e9593b8be6eb9f9d257ec0"
+page = 3
+after = 400000
+amount = 185759
+explanation = "Minutes of 23 March 2018, amended article 6: 185,759 instead of the 182,759 decided on the previous page."
+
+[[discrepancy]]
+doc = "63e9593b8be6eb9f9d257ec0"
+page = 7
+after = 400000
+amount = 185759
+explanation = "Statutes updated on 23 March 2018, article 6: the same 185,759 carried over."
+
+# ---------------------------------------------------------------------------- S01 incorporation
+
+[[step]]
+id = "S01"
+as_of = "2004-12-15"
+status = "CONFIRMED"
+note = "Statutes signed in Montauban on 15 December 2004, registered with the tax office on 5 January 2005 and deposited at the registry on 25 January 2005. as_of is the signature date. The shares were half paid up at incorporation and fully paid up on 31 March 2005 (later statutes, article 6), which does not change the cap table."
+formation = { capital_eur = 37000, nominal_eur = 100, holders = { "Xavier AUMONT" = 155, "Antonio BLANCO MARINA" = 155, "Franck GICQUEL" = 60 } }
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec5"
+  page = 3
+  lines = ["Le capital social est fixé à la somme de trente sept mille", "Il est divisé en trois cent soixante dix (370) actions d'une seule catégorie"]
+  says = "Article 7: capital of EUR 37,000 in 370 shares of EUR 100."
+
+  [[step.event]]
+  id = "E01"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2004-12-15"
+  status = "CONFIRMED"
+  date_precision = "Signature of the statutes. The company only acquires legal personality on registration, whose date is not in the corpus (the statutes were deposited on 25 January 2005)."
+  doc = "63e9593b8be6eb9f9d257ec5"
+  page = 3
+  lines = ["Monsieur Xavier AUMONT", { text = "155 actions", nth = 1 }]
+  payload = { holder_name = "Xavier AUMONT", shares = 155, mechanism = "CONSTITUTION" }
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec5"
+    page = 24
+    lines = ["Fait à Montauban", "Le 15 décembre 2004"]
+    says = "Place and date of signature of the statutes."
+
+  [[step.event]]
+  id = "E02"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2004-12-15"
+  status = "CONFIRMED"
+  date_precision = "Signature of the statutes. The company only acquires legal personality on registration, whose date is not in the corpus (the statutes were deposited on 25 January 2005)."
+  doc = "63e9593b8be6eb9f9d257ec5"
+  page = 3
+  lines = ["Monsieur Antonio BLANCO MARINA", { text = "155 actions", nth = 2 }]
+  payload = { holder_name = "Antonio BLANCO MARINA", shares = 155, mechanism = "CONSTITUTION" }
+
+  [[step.event]]
+  id = "E03"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2004-12-15"
+  status = "CONFIRMED"
+  date_precision = "Signature of the statutes. The company only acquires legal personality on registration, whose date is not in the corpus (the statutes were deposited on 25 January 2005)."
+  doc = "63e9593b8be6eb9f9d257ec5"
+  page = 3
+  lines = ["Monsieur Franck GICQUEL", "60 actions"]
+  payload = { holder_name = "Franck GICQUEL", shares = 60, mechanism = "CONSTITUTION" }
+
+# ---------------------------------------------------------------------------- S02 increase of May 2005
+
+[[step]]
+id = "S02"
+as_of = "2005-05-17"
+status = "UNRESOLVED"
+note = "Capital and number of shares are confirmed. Who subscribed the 1,130 new shares is not documented, so every holder is listed with shares = null. Documented as shareholders at this meeting, besides the three founders: GUELLATI and LEROUX. ROUJEAN is first named on 8 August 2005; her presence here is an inference. GICQUEL most likely subscribed nothing (60 shares at incorporation, 60 again in August 2005), although the 2007 HADEAN deed says he did. AUMONT subscribed, per the same deed. At the opening of the meeting 1,155 of 1,500 voting shares were present or represented."
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec4"
+  page = 2
+  lines = ["« Le capital social est fixé à cent cinquante mille euros", "Il est divisé en 1 500 actions de 100 € chacune"]
+  says = "New article 7: EUR 150,000 in 1,500 shares of EUR 100."
+
+  [[step.event]]
+  id = "E04"
+  code = "CAPITAL_INCREASE"
+  date = "2005-05-17"
+  status = "CONFIRMED"
+  date_precision = "Date of the meeting that records the completion. The increase was decided by an EGM of 4 March 2005 that is not in the corpus, and the 1,500 shares already vote at the opening of this meeting. Later statutes all date the increase 17 May 2005."
+  doc = "63e9593b8be6eb9f9d257ec4"
+  page = 2
+  lines = ["rapport du Président, constate la", "réalisation définitive de l'augmentation de capital de 113 000", "actions nouvelles de numéraire de 100 euros"]
+  payload = { amount_eur = 113000, capital_after_eur = 150000, method = "numeraire", shares_issued = 1130, nominal_eur = 100, allocation_basis = "Not documented: no filing says who subscribed the 1,130 shares, nor how many each." }
+    [step.event.allocations]
+    "Xavier AUMONT" = "?"
+    "Antonio BLANCO MARINA" = "?"
+    "Franck GICQUEL" = "?"
+    "Malik GUELLATI" = "?"
+    "Christophe LEROUX" = "?"
+    "Marielle ROUJEAN" = "?"
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec4"
+    page = 2
+    lines = ["Constatation de la réalisation de l'augmentation de capital telle que planifiée par l'AGE du 4", "mars 2005"]
+    says = "Agenda: the increase was planned by an EGM of 4 March 2005 (not in the corpus)."
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec4"
+    page = 1
+    lines = ["possèdent 1 155 actions sur les 1 500 actions"]
+    says = "1,500 voting shares already exist at the opening of the meeting."
+
+  [[step.event]]
+  id = "E05"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2005-05-17"
+  status = "SUPPORTED"
+  date_precision = "On or before: he already sits as a shareholder when the meeting opens. Entry through the 1,130 new shares is inferred, it is the only issue of shares since incorporation."
+  latest_date = "2005-05-17"
+  doc = "63e9593b8be6eb9f9d257ec4"
+  page = 1
+  lines = ["Monsieur Malik GUELLATTI et Monsieur Christophe LEROUX, associés", "par eux-mêmes que comme mandataires le plus grand nombre de voix"]
+  payload = { holder_name = "Malik GUELLATI", shares = "?", mechanism = "CAPITAL_INCREASE", mechanism_event_ids = ["E04"] }
+
+  [[step.event]]
+  id = "E06"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2005-05-17"
+  status = "SUPPORTED"
+  date_precision = "On or before: he already sits as a shareholder when the meeting opens. Entry through the 1,130 new shares is inferred."
+  latest_date = "2005-05-17"
+  doc = "63e9593b8be6eb9f9d257ec4"
+  page = 1
+  lines = ["Monsieur Malik GUELLATTI et Monsieur Christophe LEROUX, associés", "par eux-mêmes que comme mandataires le plus grand nombre de voix"]
+  payload = { holder_name = "Christophe LEROUX", shares = "?", mechanism = "CAPITAL_INCREASE", mechanism_event_ids = ["E04"] }
+
+  [[step.event]]
+  id = "E07"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2005-05-17"
+  status = "SUPPORTED"
+  date_precision = "She is first named as a shareholder on 8 August 2005. Her entry is dated with the May 2005 increase by inference: no other issue or transfer of shares is filed between incorporation and that date."
+  latest_date = "2005-08-08"
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 6
+  lines = ["Christophe LEROUX et Madame Marielle", "ROUJEAN, associés d'ARCHEAN TECHNOLOGIES, approuve"]
+  payload = { holder_name = "Marielle ROUJEAN", shares = "?", mechanism = "CAPITAL_INCREASE", mechanism_event_ids = ["E04"] }
+
+# ---------------------------------------------------------------------------- S03 exits of August 2005
+
+[[step]]
+id = "S03"
+as_of = "2005-08-16"
+status = "UNRESOLVED"
+note = "Allocation as recorded by the EGM of 8 August 2005 for the transfer orders of 16 August 2005. It says it follows the share transfer register and overrides the sale protocol, 'which contains an error'. The next attested state (attendance sheet of 20 October 2006) differs by 20 shares between BLANCO and AUMONT. The same table prints 6.00 % for GICQUEL's 60 shares of 1,500 (4.00 %): the printed percentages add up to 102 %."
+attested = { "Antonio BLANCO MARINA" = 823, "Xavier AUMONT" = 617, "Franck GICQUEL" = 60 }
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 6
+  lines = ["Antonio BLANCO", "823 actions", "Xavier AUMONT", "617 actions", "Franck GICQUEL", "60 actions", "Cette répartition est conforme au registre des mouvements de titres"]
+  says = "Allocation after the transfers: BLANCO 823, AUMONT 617, GICQUEL 60."
+
+  [[step.event]]
+  id = "E08"
+  code = "SHAREHOLDER_SHARE_TRANSFER"
+  date = "2005-08-16"
+  status = "CONFIRMED"
+  note = "He sells all his shares. The number sold and the split between the buyers are not documented. AUMONT is a proven buyer (2007 HADEAN deed), BLANCO a possible one."
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 6
+  lines = ["connaissance d’un protocole de cession de la totalité des", "Christophe LEROUX et Madame Marielle", "ROUJEAN, associés d'ARCHEAN TECHNOLOGIES, approuve", "ordres de mouvement à émettre en date du 16 août 2005", "Antonio BLANCO", "Xavier AUMONT"]
+  from = "Malik GUELLATI"
+  to = ["Xavier AUMONT", "Antonio BLANCO MARINA"]
+  shares = "all"
+  payload = { kind = "cession" }
+    [[step.event.also]]
+    doc = "63f0a89c7a07a2434c069135"
+    page = 5
+    lines = ["acquisition d'actions du 16 août 2005"]
+    says = "HADEAN statutes (2007): AUMONT's title includes an acquisition of shares on 16 August 2005."
+
+  [[step.event]]
+  id = "E09"
+  code = "SHAREHOLDER_SHARE_TRANSFER"
+  date = "2005-08-16"
+  status = "CONFIRMED"
+  note = "He sells all his shares. The number sold and the split between the buyers are not documented."
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 6
+  lines = ["connaissance d’un protocole de cession de la totalité des", "Christophe LEROUX et Madame Marielle", "ROUJEAN, associés d'ARCHEAN TECHNOLOGIES, approuve", "ordres de mouvement à émettre en date du 16 août 2005", "Antonio BLANCO", "Xavier AUMONT"]
+  from = "Christophe LEROUX"
+  to = ["Xavier AUMONT", "Antonio BLANCO MARINA"]
+  shares = "all"
+  payload = { kind = "cession" }
+
+  [[step.event]]
+  id = "E10"
+  code = "SHAREHOLDER_SHARE_TRANSFER"
+  date = "2005-08-16"
+  status = "CONFIRMED"
+  note = "She sells all her shares. The number sold and the split between the buyers are not documented."
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 6
+  lines = ["connaissance d’un protocole de cession de la totalité des", "Christophe LEROUX et Madame Marielle", "ROUJEAN, associés d'ARCHEAN TECHNOLOGIES, approuve", "ordres de mouvement à émettre en date du 16 août 2005", "Antonio BLANCO", "Xavier AUMONT"]
+  from = "Marielle ROUJEAN"
+  to = ["Xavier AUMONT", "Antonio BLANCO MARINA"]
+  shares = "all"
+  payload = { kind = "cession" }
+
+  [[step.event]]
+  id = "E11"
+  code = "SHAREHOLDER_END"
+  date = "2005-08-16"
+  status = "CONFIRMED"
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 6
+  lines = ["connaissance d’un protocole de cession de la totalité des", "Christophe LEROUX et Madame Marielle", "ordres de mouvement à émettre en date du 16 août 2005"]
+  payload = { holder_name = "Malik GUELLATI", shares = "?", mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E08"] }
+
+  [[step.event]]
+  id = "E12"
+  code = "SHAREHOLDER_END"
+  date = "2005-08-16"
+  status = "CONFIRMED"
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 6
+  lines = ["connaissance d’un protocole de cession de la totalité des", "Christophe LEROUX et Madame Marielle", "ordres de mouvement à émettre en date du 16 août 2005"]
+  payload = { holder_name = "Christophe LEROUX", shares = "?", mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E09"] }
+
+  [[step.event]]
+  id = "E13"
+  code = "SHAREHOLDER_END"
+  date = "2005-08-16"
+  status = "CONFIRMED"
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 6
+  lines = ["connaissance d’un protocole de cession de la totalité des", "Christophe LEROUX et Madame Marielle", "ROUJEAN, associés d'ARCHEAN TECHNOLOGIES, approuve", "ordres de mouvement à émettre en date du 16 août 2005"]
+  payload = { holder_name = "Marielle ROUJEAN", shares = "?", mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E10"] }
+
+# ---------------------------------------------------------------------------- S04 attested state, October 2006
+
+[[step]]
+id = "S04"
+as_of = "2006-10-20"
+status = "CONFIRMED"
+note = "State at the opening of the EGM of 20 October 2006, from the attendance sheet signed by the three shareholders. No event: this state is attested, not derived."
+restated = "The attendance sheet gives BLANCO 803 and AUMONT 637 where the EGM of 8 August 2005 recorded 823 and 617. No filing explains the 20 shares: either a transfer that was never filed, or the August 2005 table was not what the register finally recorded. Later figures (AUMONT 742 = 637 + 330 - 225 in the 2007 HADEAN deed) only work from 637."
+attested = { "Antonio BLANCO MARINA" = 803, "Xavier AUMONT" = 637, "Franck GICQUEL" = 60 }
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec7"
+  page = 6
+  lines = ["Monsieur Antonio BLANCO", { text = "803", nth = 1 }, { text = "803", nth = 2 }, "Monsieur Xavier AUMONT", { text = "637", nth = 1 }, { text = "637", nth = 2 }, "Monsieur Franck GICQUEL", { text = "60", nth = 1 }, { text = "60", nth = 2 }, "présents ou représentés possédant ensemble 1500 actions"]
+  says = "Signed attendance sheet: BLANCO 803, AUMONT 637, GICQUEL 60, together 1,500 shares."
+
+# ---------------------------------------------------------------------------- S05 increase of October 2006
+
+[[step]]
+id = "S05"
+as_of = "2006-10-20"
+status = "CONFIRMED"
+note = "After the reserved increase, dated by its decision: subscriptions stayed open until 16 November 2006, so this state exists once they are completed, not on the evening of 20 October. The third resolution reserves 330, 150 and 20 shares by name. That AUMONT and GICQUEL took theirs up is confirmed by their 2007 contributions (742 and 80); for BLANCO MARINA it follows from the increase being completed in full."
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec7"
+  page = 10
+  lines = ["Le capital social est fixé à la somme de deux cent mille", "Il est divisé en deux mille (2000) actions"]
+  says = "Statutes updated after the increase, article 7: EUR 200,000 in 2,000 shares of EUR 100."
+
+  [[step.event]]
+  id = "E14"
+  code = "CAPITAL_INCREASE"
+  date = "2006-10-20"
+  status = "CONFIRMED"
+  date_precision = "Decision date. Subscriptions stayed open until 16 November 2006 and the auditor's certificate that completes an increase paid by set-off is not in the corpus. Every later filing dates the increase 20 October 2006."
+  doc = "63e9593b8be6eb9f9d257ec7"
+  page = 3
+  lines = ["d'augmenter le capital social d'une somme de 50.000 euros", "à 200.000 euros, par création de 500 actions nouvelles", "chacune, émises au pair, à libérer en totalité lors de la souscription, par compensation avec"]
+  payload = { amount_eur = 50000, capital_after_eur = 200000, method = "numeraire", method_detail = "Cash increase at par, paid up by set-off against the subscribers' current-account claims (compensation de créances).", shares_issued = 500, nominal_eur = 100, allocation_basis = "Third resolution: subscription reserved to the three shareholders." }
+    [step.event.allocations]
+    "Xavier AUMONT" = 330
+    "Antonio BLANCO MARINA" = 150
+    "Franck GICQUEL" = 20
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec7"
+    page = 3
+    lines = ["Monsieur Xavier AuMONT", "Pour 330 actions", "Monsieur Antonio BLANCO MARINA", "Pour 150 actions", "Monsieur Franck GICQUEL", "Pour 20 actions"]
+    says = "Third resolution: 330, 150 and 20 new shares reserved to AUMONT, BLANCO MARINA and GICQUEL."
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec7"
+    page = 10
+    lines = ["Le capital est porté de 150.000 à 200.000 euros", "compensation de comptes courants décidée par"]
+    says = "Updated statutes, article 6: capital raised from 150,000 to 200,000 by set-off, EGM of 20 October 2006."
+
+# ---------------------------------------------------------------------------- S06 sale to Michel CAPGRAS
+
+[[step]]
+id = "S06"
+as_of = "2006-10-20"
+status = "SUPPORTED"
+note = "The sale is certain, its date is not. as_of is the date of the approval; the sale was executed at a date the filings do not give, at the latest 7 September 2007, when AUMONT contributes the 742 shares he has left. This composition is therefore confirmed for 7 September 2007 at the latest, not for 20 October 2006."
+
+  [[step.event]]
+  id = "E15"
+  code = "SHAREHOLDER_SHARE_TRANSFER"
+  date = "2006-10-20"
+  status = "SUPPORTED"
+  note = "The cited page only authorises the sale. That it was carried out is inferred from two later deeds: AUMONT contributes 742 shares in 2007 (967 - 225) and CAPGRAS holds 225 in 2008."
+  date_precision = "Date of the authorisation by the EGM, which is the earliest possible date. Execution date and price are not filed."
+  earliest_date = "2006-10-20"
+  latest_date = "2007-09-07"
+  doc = "63e9593b8be6eb9f9d257ec7"
+  page = 5
+  lines = ["L'Assemblée Générale autorise Monsieur Xavier AUMONt à céder 225 actions à Monsieur", "Michel CAPGRAs. Ce faisant, chaque actionnaire renonce"]
+  from = "Xavier AUMONT"
+  to = "Michel CAPGRAS"
+  shares = 225
+  payload = { kind = "cession" }
+    [[step.event.also]]
+    doc = "63f0a89c7a07a2434c069137"
+    page = 30
+    lines = ["de droit, ce qui est accepté par ladite société, la totalité des DEUX CENT VINGT CINQ (225)", "titres qu'il détient dans le capital de la société ARCHEAN TECHNOLOGIES"]
+    says = "On 30 April 2008 Michel CAPGRAS holds 225 ARCHEAN shares: the sale took place."
+
+  [[step.event]]
+  id = "E16"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2006-10-20"
+  status = "SUPPORTED"
+  date_precision = "Date of his approval as a new shareholder, which is the earliest possible date. He actually enters when the sale is executed, at the latest 7 September 2007."
+  earliest_date = "2006-10-20"
+  latest_date = "2007-09-07"
+  doc = "63e9593b8be6eb9f9d257ec7"
+  page = 4
+  lines = ["connaissance du rapport du Président agrée à devenir", "actionnaire Monsieur Michel CAPGRAS"]
+  payload = { holder_name = "Michel CAPGRAS", shares = 225, mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E15"] }
+
+# ---------------------------------------------------------------------------- S07 contributions to HADEAN
+
+[[step]]
+id = "S07"
+as_of = "2007-09-07"
+status = "SUPPORTED"
+note = "Confirmed: AUMONT and GICQUEL contribute all their ARCHEAN shares (822 of 2,000, 'a minority stake') to HADEAN at its incorporation. The deed says the contributions take effect on the day it is signed; HADEAN's registration date is not in the file (its statutes were deposited on 18 September 2007). Carried forward, not restated by any filing of that date: the 953 shares of BLANCO MARINA (last documented in October 2006) and the 225 of CAPGRAS (documented again on 30 April 2008)."
+
+  [[step.evidence]]
+  doc = "63f0a89c7a07a2434c069135"
+  page = 7
+  lines = ["Le présent apport de titres porte sur une participation minoritaire au sein de la SAS"]
+  says = "HADEAN statutes: the 822 shares contributed are a minority stake."
+
+  [[step.evidence]]
+  doc = "63f0a89c7a07a2434c069135"
+  page = 5
+  lines = ["Son capital social est actuellement fixé à DEUX CENT MILLE", "2.000 actions de 100 euros de valeur nominale."]
+  says = "ARCHEAN's capital on 7 September 2007: EUR 200,000 in 2,000 shares of EUR 100."
+
+  [[step.event]]
+  id = "E17"
+  code = "SHAREHOLDER_SHARE_TRANSFER"
+  date = "2007-09-07"
+  status = "CONFIRMED"
+  date_precision = "Signature of HADEAN's statutes, which state that the contributions take effect that day."
+  doc = "63f0a89c7a07a2434c069135"
+  page = 5
+  lines = ["6.2- Apport de 742 actions de la SAS ARCHEAN TECHNOLOGIES par Monsieur", "Monsieur Xavier AUMONT fait apport de la pleine propriété des 742"]
+  from = "Xavier AUMONT"
+  to = "HADEAN"
+  shares = 742
+  payload = { kind = "apport en nature", price_eur = 426650, consideration = "17,066 HADEAN shares of EUR 25 (EUR 575 per ARCHEAN share)" }
+    [[step.event.also]]
+    doc = "63f0a89c7a07a2434c069135"
+    page = 6
+    lines = ["Les apports qui précédent prennent effet à compter de ce jour.", "En conséquence, la Société HADEAN aura seule vocation à encaisser"]
+    says = "The contributions take effect on the day of the deed, for the benefit of HADEAN."
+    [[step.event.also]]
+    doc = "63f0a89c7a07a2434c069135"
+    page = 23
+    lines = ["Fait à Blagnac", "Le 7 septembre 2007"]
+    says = "Place and date of signature of HADEAN's statutes."
+
+  [[step.event]]
+  id = "E18"
+  code = "SHAREHOLDER_SHARE_TRANSFER"
+  date = "2007-09-07"
+  status = "CONFIRMED"
+  date_precision = "Signature of HADEAN's statutes, which state that the contributions take effect that day."
+  doc = "63f0a89c7a07a2434c069135"
+  page = 6
+  lines = ["6.3- Apport de 80 actions de la SAS ARCHEAN TECHNOLOGIES par Monsieur", "Monsieur Franck GICQUEL fait apport de la pleine propriété des QUATRE VINGT", "(80) actions de 100 Euros de valeur nominale chacune de la Société ARCHEAN"]
+  from = "Franck GICQUEL"
+  to = "HADEAN"
+  shares = 80
+  payload = { kind = "apport en nature", price_eur = 46000, consideration = "1,840 HADEAN shares of EUR 25 (EUR 575 per ARCHEAN share)" }
+    [[step.event.also]]
+    doc = "63f0a89c7a07a2434c069135"
+    page = 6
+    lines = ["Les apports qui précédent prennent effet à compter de ce jour.", "En conséquence, la Société HADEAN aura seule vocation à encaisser"]
+    says = "The contributions take effect on the day of the deed, for the benefit of HADEAN."
+
+  [[step.event]]
+  id = "E19"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2007-09-07"
+  status = "CONFIRMED"
+  doc = "63f0a89c7a07a2434c069135"
+  page = 6
+  lines = ["La Société bénéficiaire acquiert donc la pleine propriété et la jouissance des titres de la", "société ARCHEAN TECHNOLOGIES apportés par Monsieur Xavier AUMONT, Monsieur Franck", "GICQUEL à compter de ce jour.", "En conséquence, la Société HADEAN aura seule vocation à encaisser"]
+  payload = { holder_name = "HADEAN", holder_siren = "499979540", shares = 822, mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E17", "E18"] }
+
+  [[step.event]]
+  id = "E20"
+  code = "SHAREHOLDER_END"
+  date = "2007-09-07"
+  status = "CONFIRMED"
+  note = "He leaves the cap table as a direct holder and stays behind HADEAN, of which he receives 17,066 shares."
+  doc = "63f0a89c7a07a2434c069135"
+  page = 5
+  lines = ["6.2- Apport de 742 actions de la SAS ARCHEAN TECHNOLOGIES par Monsieur", "Monsieur Xavier AUMONT fait apport de la pleine propriété des 742"]
+  payload = { holder_name = "Xavier AUMONT", shares = 742, mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E17"] }
+
+  [[step.event]]
+  id = "E21"
+  code = "SHAREHOLDER_END"
+  date = "2007-09-07"
+  status = "CONFIRMED"
+  note = "He leaves the cap table as a direct holder and stays behind HADEAN, of which he receives 1,840 shares."
+  doc = "63f0a89c7a07a2434c069135"
+  page = 6
+  lines = ["6.3- Apport de 80 actions de la SAS ARCHEAN TECHNOLOGIES par Monsieur", "Monsieur Franck GICQUEL fait apport de la pleine propriété des QUATRE VINGT", "(80) actions de 100 Euros de valeur nominale chacune de la Société ARCHEAN"]
+  payload = { holder_name = "Franck GICQUEL", shares = 80, mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E18"] }
+
+# ---------------------------------------------------------------------------- S08 contribution by Michel CAPGRAS
+
+[[step]]
+id = "S08"
+as_of = "2008-04-30"
+status = "SUPPORTED"
+note = "Confirmed: HADEAN's EGM of 30 April 2008 approves the contribution and records that the capital increase paying for it is completed, which brings HADEAN to 1,047 shares. Carried forward: the other 953 shares are attributed to BLANCO MARINA, their last documented holder (October 2006). The order between this contribution and his exit is not documented."
+
+  [[step.event]]
+  id = "E22"
+  code = "SHAREHOLDER_SHARE_TRANSFER"
+  date = "2008-04-30"
+  status = "CONFIRMED"
+  doc = "63f0a89c7a07a2434c069137"
+  page = 30
+  lines = ["Monsieur Michei CAPGRAS apporte à la société HADEAN, sous les garanties ordinaires et", "de droit, ce qui est accepté par ladite société, la totalité des DEUX CENT VINGT CINQ (225)", "titres qu'il détient dans le capital de la société ARCHEAN TECHNOLOGIES"]
+  from = "Michel CAPGRAS"
+  to = "HADEAN"
+  shares = 225
+  payload = { kind = "apport en nature", price_eur = 129375, consideration = "2,396 HADEAN shares of EUR 25 plus a contribution premium (EUR 575 per ARCHEAN share)" }
+    [[step.event.also]]
+    doc = "63f0a89c7a07a2434c069137"
+    page = 23
+    lines = ["du contrat d’apport en date du 30 avril 2008 aux termes duquel Monsieur Michel CAPGRAS fait", "apport à la Société de 225 titres qu'il détient dans la société ARCHEAN TECHNOLOGIES", "Approuve cet apport ainsi que son évaluation"]
+    says = "HADEAN's EGM of 30 April 2008 approves the contribution agreement of the same day."
+    [[step.event.also]]
+    doc = "63f0a89c7a07a2434c069137"
+    page = 25
+    lines = ["que les deux opérations concomitantes d’augmentation du capital sont définitivement réalisées"]
+    says = "The EGM records that the HADEAN capital increase paying for the contribution is completed."
+
+  [[step.event]]
+  id = "E23"
+  code = "SHAREHOLDER_END"
+  date = "2008-04-30"
+  status = "CONFIRMED"
+  note = "He contributes all the shares he holds and becomes a shareholder of HADEAN."
+  doc = "63f0a89c7a07a2434c069137"
+  page = 30
+  lines = ["Monsieur Michei CAPGRAS apporte à la société HADEAN, sous les garanties ordinaires et", "de droit, ce qui est accepté par ladite société, la totalité des DEUX CENT VINGT CINQ (225)", "titres qu'il détient dans le capital de la société ARCHEAN TECHNOLOGIES"]
+  payload = { holder_name = "Michel CAPGRAS", shares = 225, mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E22"] }
+
+# ---------------------------------------------------------------------------- S09 HADEAN sole shareholder
+
+[[step]]
+id = "S09"
+as_of = "2008-06-27"
+status = "CONFIRMED"
+note = "On 27 June 2008 HADEAN decides as sole shareholder: it holds the 2,000 shares. How and when it obtained the 953 shares last traced to Antonio BLANCO MARINA is not in the corpus (between 7 September 2007, when HADEAN is formed, and 27 June 2008)."
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 1
+  lines = ["La société HADEAN, société par actions simplifiée au capital de 578.450 euros", "sociétés de Montauban sous le numéro 499 979 540, Associée Unique de la"]
+  says = "HADEAN (RCS 499 979 540) acts as sole shareholder of the company."
+
+  [[step.event]]
+  id = "E24"
+  code = "SHAREHOLDER_SHARE_TRANSFER"
+  date = "2008-06-27"
+  status = "SUPPORTED"
+  note = "Inferred, not read in a deed. BLANCO MARINA is the last documented holder of these 953 shares (803 on 20 October 2006 plus the 150 reserved to him that day) and HADEAN holds everything on 27 June 2008. A transfer through a third party cannot be excluded. The cited box is the evidence of the result, not a transfer deed."
+  date_precision = "On or before: date of the first decision in which HADEAN acts as sole shareholder."
+  earliest_date = "2007-09-07"
+  latest_date = "2008-06-27"
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 1
+  lines = ["La société HADEAN, société par actions simplifiée au capital de 578.450 euros", "sociétés de Montauban sous le numéro 499 979 540, Associée Unique de la"]
+  from = "Antonio BLANCO MARINA"
+  to = "HADEAN"
+  shares = 953
+  payload = { kind = "not documented", grounding = "indirect" }
+
+  [[step.event]]
+  id = "E25"
+  code = "SHAREHOLDER_END"
+  date = "2008-06-27"
+  status = "SUPPORTED"
+  note = "That he holds nothing on 27 June 2008 is certain, because HADEAN is sole shareholder. The 953 shares and the date are inferred. The cited box does not name him: it is the evidence that nobody but HADEAN is left."
+  date_precision = "On or before."
+  earliest_date = "2007-09-07"
+  latest_date = "2008-06-27"
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 1
+  lines = ["La société HADEAN, société par actions simplifiée au capital de 578.450 euros", "sociétés de Montauban sous le numéro 499 979 540, Associée Unique de la"]
+  payload = { holder_name = "Antonio BLANCO MARINA", shares = 953, mechanism = "SHAREHOLDER_SHARE_TRANSFER", mechanism_event_ids = ["E24"], grounding = "indirect" }
+
+# ---------------------------------------------------------------------------- S10 nominal split
+
+[[step]]
+id = "S10"
+as_of = "2008-06-27"
+status = "CONFIRMED"
+note = "First resolution of 27 June 2008: the nominal value is divided by 100. No code of the challenge taxonomy covers a split, so it has no event: it is carried by corporate_action and grounded in the evidence of this state."
+split = 100
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 1
+  lines = ["DÉcIDE de diviser la valeur nominale des actions par 100", "le capital qui reste fixé à 200.000 euros est désormais", "divisé en 200.000 actions d'une valeur nominale de 1 euro chacune."]
+  says = "Capital unchanged at EUR 200,000, now 200,000 shares of EUR 1."
+
+# ---------------------------------------------------------------------------- S11 preference shares and funds
+
+[[step]]
+id = "S11"
+as_of = "2008-06-27"
+status = "SUPPORTED"
+note = "as_of is the decision date; when the two increases were completed is not documented (see E28). Capital, share count and classes are those of the statutes annexed to the decisions of 27 June 2008 (217,241 A and 150,861 B). The 200,000 existing shares, 'of the same class' after the split, are counted as A shares in those statutes: the resolution that converts them is not in the extract (resolution 7 is missing). The filed minutes are an extract without resolutions 12 to 15, which name the subscribers. The four funds and their counts come from the 21 February 2017 buy-back list: 64,655 / 43,103 / 30,172 / 12,931 are exactly EUR 375,000 / 250,000 / 175,000 / 75,000 divided by the 2008 price of EUR 5.80 and rounded down, and add up to the 150,861 B shares issued. HADEAN's subscription of the 17,241 new A shares rests on it holding all 217,241 A shares afterwards."
+share_class = { "HADEAN" = "A", "FPCI SECURITE" = "B", "FIP GALIA PME 4" = "B", "GALIA VENTURE" = "B", "FPCI FINANCIERE DE BRIENNE" = "B" }
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 8
+  lines = ["Le capital social est fixé à la somme de 368.102 euros.", "217.241 actions de préférence de catégorie A,", "150.861 actions de préférence de catégorie B."]
+  says = "Statutes updated on 27 June 2008, article 7: EUR 368,102 in 217,241 A shares and 150,861 B shares."
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec8"
+  page = 3
+  lines = ["À titre de dividendes à l’associée détenant", "des actions de catégorie « A », à hauteur de"]
+  says = "30 November 2010: one shareholder, a company (feminine singular), holds the A shares."
+
+  [[step.event]]
+  id = "E26"
+  code = "CAPITAL_DUAL_CLASS"
+  date = "2008-06-27"
+  status = "CONFIRMED"
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 2
+  lines = ["6EME RESOLUTION", "Création d’actions de préférence de catégorie A", "créer des actions de préférence de catégorie A (ci-après les « Actions A »)"]
+  note = "The two reports of the commissioner for special benefits give different caps for the A dividend: EUR 32,000 a year and 160,000 in total on 18 June 2008, EUR 35,000 and 245,000 on 22 July 2008. No filed decision explains the change. The dividend voted on 30 November 2010 is 35,000."
+  payload = { class_name = "A", description = "Preference shares A: capped priority dividend, automatic conversion into ordinary shares on listing, on a sale of 100 % or once the cap is reached. Created subject to the completion of the two capital increases of the same day." }
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec6"
+    page = 2
+    lines = ["I.1. Actions de catégorie A", "I.1.1. Dividende prioritaire", "montant annuel maximum de 32 000"]
+    says = "Commissioner's report of 18 June 2008: rights of the A shares, priority dividend capped at EUR 32,000 a year."
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec1"
+    page = 2
+    lines = ["montant annuel maximum de 35 000", "soit égal à 245 000 euros"]
+    says = "Supplementary report of 22 July 2008: EUR 35,000 a year, 245,000 in total."
+
+  [[step.event]]
+  id = "E27"
+  code = "CAPITAL_DUAL_CLASS"
+  date = "2008-06-27"
+  status = "CONFIRMED"
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 2
+  lines = ["8ÈME RESOLUTION", "Création d’actions de préférence de catégorie B et B'", "créer des actions de préférence de catégorie B (ci-après les « Actions B ») et des actions de", { text = "préférence de catégorie B' (ci-après les « Actions B' »)", nth = 2 }]
+  payload = { class_name = "B and B'", description = "Preference shares B for the financial investors: reinforced information and audit rights, seats on the monitoring committee, liquidation preference, conversion into B' shares on a down round. B' shares only arise from that conversion; none is issued here." }
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec6"
+    page = 3
+    lines = ["I.2. Actions de catégorie B et B'", "I.2.1. Droit d'information renforcé"]
+    says = "Commissioner's report of 18 June 2008: rights of the B and B' shares, described over pages 3 to 9."
+
+  [[step.event]]
+  id = "E28"
+  code = "CAPITAL_INCREASE"
+  date = "2008-06-27"
+  status = "CONFIRMED"
+  note = "Amount and number of shares are confirmed. The subscriber is not named in the extract: the allocation to HADEAN is SUPPORTED."
+  date_precision = "Decision date, which every later filing uses. Completion is not documented: subscriptions were open until 18 July 2008 and could be extended, and the certificate is not in the corpus. The statutes annexed to the decisions show the new capital but were adopted subject to completion, and the commissioner's supplementary report of 22 July 2008 still heads its pages with a capital of EUR 200,000. The first later filing that states EUR 368,102 is the general meeting of 30 November 2010."
+  latest_date = "2010-11-30"
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 2
+  lines = ["DÉciDE d'augmenter le capital social de la Société d'un montant nominal de 17.241 euros, par", "l'émission de 17.241 Actions A (les « Actions A Nouvelles »), d'une valeur nominale de 1 euro"]
+  payload = { amount_eur = 17241, capital_after_eur = 217241, method = "numeraire", method_detail = "Cash, set-off against claims allowed. Issue price EUR 5.80 per share, EUR 99,997.80 in total.", shares_issued = 17241, nominal_eur = 1, issue_price_eur = 5.8, share_class = "A", allocation_basis = "SUPPORTED: the subscriber is not named in the extract. HADEAN holds all 217,241 A shares afterwards." }
+    [step.event.allocations]
+    "HADEAN" = 17241
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec3"
+    page = 8
+    lines = ["de 17.241 euros afin d'être porté à 217.241 euros."]
+    says = "Updated statutes, article 6: capital raised by 17,241 to 217,241."
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec8"
+    page = 1
+    lines = ["Société par actions simplifiée au capital de 368.102 euros"]
+    says = "General meeting of 30 November 2010: first later filing that states the capital after both increases."
+
+  [[step.event]]
+  id = "E29"
+  code = "CAPITAL_INCREASE"
+  date = "2008-06-27"
+  status = "CONFIRMED"
+  note = "Amount and number of shares are confirmed. The subscribers are not named in the extract: the allocation to the four funds is SUPPORTED. The minutes split the premium of EUR 724,132.80 into 603,444 and 271,549.90, which add up to 874,993.90: the whole subscription price plus ten cents, not the premium. No capital figure depends on it."
+  date_precision = "Decision date, which every later filing uses. Completion is not documented: subscriptions were open until 18 July 2008 and could be extended, and the certificate is not in the corpus. The statutes annexed to the decisions show the new capital but were adopted subject to completion, and the commissioner's supplementary report of 22 July 2008 still heads its pages with a capital of EUR 200,000. The first later filing that states EUR 368,102 is the general meeting of 30 November 2010."
+  latest_date = "2010-11-30"
+  doc = "63e9593b8be6eb9f9d257ec3"
+  page = 3
+  lines = ["Augmentation du capital social d’un montant nominal de 150.861 euros,", "par l’émission de 150.861 Actions B à bon de souscription d’obligations convertibles en Actions B", "d’augmenter le capital social d'un montant nominal de 150.861 euros par l'émission de 150.861"]
+  payload = { amount_eur = 150861, capital_after_eur = 368102, method = "numeraire", method_detail = "Cash. Issue price EUR 5.80 per share, EUR 874,993.80 in total. Each B share carries a warrant to subscribe bonds convertible into B shares.", shares_issued = 150861, nominal_eur = 1, issue_price_eur = 5.8, share_class = "B", allocation_basis = "SUPPORTED: back-projected from the 21 February 2017 buy-back list (see the state note)." }
+    [step.event.allocations]
+    "FPCI SECURITE" = 64655
+    "FPCI FINANCIERE DE BRIENNE" = 43103
+    "GALIA VENTURE" = 30172
+    "FIP GALIA PME 4" = 12931
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec3"
+    page = 8
+    lines = ["de 150.861 euros afin d’être porté à 368.102 euros."]
+    says = "Updated statutes, article 6: capital raised by 150,861 to 368,102."
+
+  [[step.event]]
+  id = "E30"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2008-06-27"
+  status = "SUPPORTED"
+  date_precision = "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed."
+  latest_date = "2010-11-30"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["- à FPCI SECURITE", "64 655 actions"]
+  payload = { holder_name = "FPCI SECURITE", shares = 64655, mechanism = "CAPITAL_INCREASE", mechanism_event_ids = ["E29"] }
+
+  [[step.event]]
+  id = "E31"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2008-06-27"
+  status = "SUPPORTED"
+  date_precision = "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed."
+  latest_date = "2010-11-30"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["- à FPCI FINANCIERE DE BRIENNE", "43 103 actions"]
+  payload = { holder_name = "FPCI FINANCIERE DE BRIENNE", shares = 43103, mechanism = "CAPITAL_INCREASE", mechanism_event_ids = ["E29"] }
+
+  [[step.event]]
+  id = "E32"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2008-06-27"
+  status = "SUPPORTED"
+  date_precision = "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed."
+  latest_date = "2010-11-30"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["- à GALIA VENTURE", "30 172 actions"]
+  payload = { holder_name = "GALIA VENTURE", shares = 30172, mechanism = "CAPITAL_INCREASE", mechanism_event_ids = ["E29"] }
+
+  [[step.event]]
+  id = "E33"
+  code = "SHAREHOLDER_ENTRY"
+  date = "2008-06-27"
+  status = "SUPPORTED"
+  date_precision = "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed."
+  latest_date = "2010-11-30"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["- à FIP GALIA PME 4", "12 931 actions"]
+  payload = { holder_name = "FIP GALIA PME 4", shares = 12931, mechanism = "CAPITAL_INCREASE", mechanism_event_ids = ["E29"] }
+
+# ---------------------------------------------------------------------------- S12 buy-back and cancellation
+
+[[step]]
+id = "S12"
+as_of = "2017-02-21"
+status = "CONFIRMED"
+note = "The president records the buy-back of the 150,861 B shares at EUR 2.72 and cancels them 'as of this day'. The general meeting of 19 January 2017 had authorised it subject to financing and to the absence of creditor opposition. The meeting charges the excess over nominal to the share premium, the president's decision to 'Autres Réserves': an accounting difference with no effect on the capital."
+
+  [[step.evidence]]
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["Le capital social est fixé à la somme de 217 241 euros.", "Il est divisé en 217 241 actions de 1 euro chacune entièrement libérées", "détenues par la société HADEAN, titulaire d'actions de préférence de catégorie A."]
+  says = "New article 7: EUR 217,241 in 217,241 shares, all held by HADEAN."
+
+  [[step.event]]
+  id = "E34"
+  code = "CAPITAL_DECREASE"
+  date = "2017-02-21"
+  status = "CONFIRMED"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["Les actions rachetées sont annulées à compter de ce jour.", "le Président constate que le capital social est réduit de 150 861 euros pour", "être ramené de 368 102 euros à 217 241 euros et divisé en 217 241 actions"]
+  payload = { amount_eur = 150861, capital_after_eur = 217241, method = "autre", method_detail = "Buy-back of 150,861 shares at EUR 2.72 each (EUR 410,341.92) followed by cancellation, article L.225-207 of the Code de commerce.", shares_cancelled = 150861, nominal_eur = 1, price_per_share_eur = 2.72 }
+    [step.event.cancellations]
+    "FPCI SECURITE" = 64655
+    "FPCI FINANCIERE DE BRIENNE" = 43103
+    "GALIA VENTURE" = 30172
+    "FIP GALIA PME 4" = 12931
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ebf"
+    page = 3
+    lines = ["Commissaire aux Comptes, autorise la réduction du capital social pour un montant maximum", "de 150 861 euros, pour le ramener de 368 102 euros à 217 241 euros, par voie de rachat d'actions"]
+    says = "General meeting of 19 January 2017: authorisation, conditional, of the reduction by buy-back."
+    [[step.event.also]]
+    doc = "63e9593a8be6eb9f9d257ebe"
+    page = 2
+    lines = ["qu'à la date du 14 février 2017, soit à l'expiration du délai de vingt jours"]
+    says = "No creditor opposition at the end of the legal period, 14 February 2017."
+    [[step.event.also]]
+    doc = "63e9593c8be6eb9f9d257ed0"
+    page = 26
+    lines = ["Suivant procès-verbal en date du 21 février 2017, le Président a constaté la réalisation", "217 241 euros par la sortie des quatre actionnaires minoritaires."]
+    says = "Management report for 2016: reduction completed on 21 February 2017 by the exit of the four minority shareholders."
+
+  [[step.event]]
+  id = "E35"
+  code = "SHAREHOLDER_END"
+  date = "2017-02-21"
+  status = "CONFIRMED"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["- à FPCI SECURITE", "64 655 actions"]
+  payload = { holder_name = "FPCI SECURITE", shares = 64655, mechanism = "CAPITAL_DECREASE", mechanism_event_ids = ["E34"] }
+
+  [[step.event]]
+  id = "E36"
+  code = "SHAREHOLDER_END"
+  date = "2017-02-21"
+  status = "CONFIRMED"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["- à FPCI FINANCIERE DE BRIENNE", "43 103 actions"]
+  payload = { holder_name = "FPCI FINANCIERE DE BRIENNE", shares = 43103, mechanism = "CAPITAL_DECREASE", mechanism_event_ids = ["E34"] }
+
+  [[step.event]]
+  id = "E37"
+  code = "SHAREHOLDER_END"
+  date = "2017-02-21"
+  status = "CONFIRMED"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["- à GALIA VENTURE", "30 172 actions"]
+  payload = { holder_name = "GALIA VENTURE", shares = 30172, mechanism = "CAPITAL_DECREASE", mechanism_event_ids = ["E34"] }
+
+  [[step.event]]
+  id = "E38"
+  code = "SHAREHOLDER_END"
+  date = "2017-02-21"
+  status = "CONFIRMED"
+  doc = "63e9593a8be6eb9f9d257ebe"
+  page = 3
+  lines = ["- à FIP GALIA PME 4", "12 931 actions"]
+  payload = { holder_name = "FIP GALIA PME 4", shares = 12931, mechanism = "CAPITAL_DECREASE", mechanism_event_ids = ["E34"] }
+
+# ---------------------------------------------------------------------------- S13 incorporation of reserves
+
+[[step]]
+id = "S13"
+as_of = "2018-03-23"
+status = "CONFIRMED"
+note = "Last change of capital in the corpus. The 2059-F tax forms for the years ended 31 December 2018 to 2024 all show HADEAN with 400,000 shares, and the minutes of 24 June 2024 (deposited on 2 December 2025) still state a capital of EUR 400,000."
+
+  [[step.evidence]]
+  doc = "63e9593b8be6eb9f9d257ec0"
+  page = 3
+  lines = ["Le capital social est fixé à la somme de 400 000 euros.", "Il est divisé en 400 000 actions de 1 euro chacune entièrement libérées, intégralement", "détenues par la société HADEAN, titulaire d'actions de préférence de catégorie A."]
+  says = "New article 7: EUR 400,000 in 400,000 shares, all held by HADEAN."
+
+  [[step.evidence]]
+  doc = "63e9593d8be6eb9f9d257ed2"
+  page = 20
+  lines = ["HADEAN", "499979540", "100.0000Nb de parts ou actions", "400 000.00"]
+  says = "Tax form 2059-F, year ended 31 December 2018: HADEAN (SIREN 499979540) holds 100 %, 400,000 shares."
+
+  [[step.event]]
+  id = "E39"
+  code = "CAPITAL_INCREASE"
+  date = "2018-03-23"
+  status = "CONFIRMED"
+  note = "The amended article 6 in the same minutes, and in the updated statutes, says 185,759. That figure is refuted by the arithmetic (217,241 + 185,759 = 403,000) and by the decision itself."
+  doc = "63e9593b8be6eb9f9d257ec0"
+  page = 2
+  lines = ["L'Associée Unique décide d’augmenter le capital social d’un montant de 182 759 euros par", "il sera créé 182 759 actions nouvelles de 1", "Ces actions porteront jouissance à compter de ce jour et seront attribuées gratuitement à"]
+  payload = { amount_eur = 182759, capital_after_eur = 400000, method = "incorporation de reserves", method_detail = "Transfer from 'Autres Réserves'; the new shares are allotted free of charge to the sole shareholder.", shares_issued = 182759, nominal_eur = 1, allocation_basis = "Stated: allotted to the sole shareholder." }
+    [step.event.allocations]
+    "HADEAN" = 182759
+    [[step.event.also]]
+    doc = "63e9593b8be6eb9f9d257ec0"
+    page = 3
+    lines = ["été augmenté de 185 759 euros par incorporation de réserves pour être porté à 400 000"]
+    says = "CONTRADICTION: the amended article 6 says 185,759."
+    [[step.event.also]]
+    doc = "63e9593c8be6eb9f9d257ed1"
+    page = 40
+    lines = ["du capital social d'un montant de 182 759 euros par incorporation de réserves, pour le porter à"]
+    says = "Management report for 2017: 182,759, to reach 400,000."
+
+# ---------------------------------------------------------------------------- group (bonus)
+# Only relations read in a filing become edges. The 16 other companies of the corpus are added by the
+# build as nodes with in_group = false, after checking that no filing on either side names the other.
+
+[group]
+notes = """
+Edges are limited to what a filing states. ARCHEAN MOTION (Lisbon) is listed as a 100 % subsidiary on the
+2059-G tax form, whose SIREN box repeats ARCHEAN TECHNOLOGIES' own number: a foreign company has no SIREN,
+so it stays unresolved. ARCHEAN INTERNATIONAL is only a party to an agreement approved on 8 August 2005.
+CHANGE BY FIDSO is not in the corpus; its SIREN is read on its stamp on HADEAN's attendance sheet.
+HADEAN bought back and cancelled the 2,396 shares of the late Michel CAPGRAS on 6 April 2022 (capital
+EUR 518,550 in 20,742 shares), so the 2019 percentages given here are no longer current.
+AIR SYSTEM SERVICE's own filings have no OCR and I did not read them: the registry index entries of its
+actes describe transfers of parts inside the DUMAS family (1997, 2003, 2012), which I do not assert as
+edges. LES IMPRESSIONS DUMAS shares that surname and no documentary link that I could find.
+"""
+
+  # The registry index says "NON RENSEIGNE" for these two; the name is read on their cover pages.
+  [group.names]
+  "016850919" = "ETABLISSEMENTS JACQUENET MALIN"
+  "035550318" = "ORTELLI ET CIE"
+
+  [[group.node]]
+  name = "ARCHEAN TECHNOLOGIES"
+  siren = "480489707"
+  resolved = true
+  kind = "COMPANY"
+  in_group = true
+
+  [[group.node]]
+  name = "HADEAN"
+  siren = "499979540"
+  resolved = true
+  kind = "COMPANY"
+  in_group = true
+
+  [[group.node]]
+  name = "ARCHEAN LABS"
+  siren = "843071218"
+  resolved = true
+  kind = "COMPANY"
+  in_group = true
+
+  [[group.node]]
+  name = "AIR SYSTEM SERVICE"
+  siren = "352890354"
+  resolved = true
+  kind = "COMPANY"
+  in_group = true
+
+  [[group.node]]
+  name = "CHANGE BY FIDSO"
+  siren = "505295196"
+  resolved = true
+  kind = "COMPANY"
+  in_group = true
+  basis = "Not in the corpus. SIREN read twice on its stamp on HADEAN's attendance sheet of 28 June 2019 (RCS Bordeaux 505 295 196, VAT FR58 505-295-196)."
+
+  [[group.node]]
+  name = "ARCHEAN MOTION"
+  resolved = false
+  kind = "COMPANY"
+  in_group = true
+  basis = "Company in Lisbon, Portugal. The SIREN box of the tax form holds 480489707, which is ARCHEAN TECHNOLOGIES' own number."
+
+  [[group.node]]
+  name = "ARCHEAN INTERNATIONAL"
+  resolved = false
+  kind = "UNKNOWN"
+  in_group = false
+  basis = "Named once, as the other party to an agreement. No SIREN, no legal form, no holding stated."
+
+  [[group.node]]
+  name = "Xavier AUMONT"
+  kind = "PERSON"
+  in_group = true
+
+  [[group.node]]
+  name = "Franck GICQUEL"
+  kind = "PERSON"
+  in_group = true
+
+  [[group.node]]
+  name = "Michel CAPGRAS"
+  kind = "PERSON"
+  in_group = true
+
+  [[group.edge]]
+  from = "HADEAN"
+  to = "ARCHEAN TECHNOLOGIES"
+  relation = "shareholder_of"
+  shares = 400000
+  shares_total = 400000
+  as_of = "2024-12-31"
+  status = "CONFIRMED"
+  doc = "69a5a5f9c03aba07720a66d8"
+  page = 17
+  lines = ["HADEAN", "499979540", "400 000.00", { text = "400000", nth = 1 }]
+  says = "Tax form 2059-F for the year ended 31 December 2024: HADEAN, SIREN 499979540, holds the 400,000 shares."
+
+  [[group.edge]]
+  from = "ARCHEAN TECHNOLOGIES"
+  to = "ARCHEAN LABS"
+  relation = "shareholder_of"
+  pct = 100.0
+  as_of = "2018-12-31"
+  status = "CONFIRMED"
+  doc = "63e9593d8be6eb9f9d257ed2"
+  page = 21
+  lines = ["ARCHEAN LABS", "843071218", { text = "100.00", nth = 1 }]
+  says = "Tax form 2059-G (subsidiaries) for the year ended 31 December 2018: ARCHEAN LABS, SIREN 843071218, held at 100 %."
+
+  [[group.edge]]
+  from = "ARCHEAN TECHNOLOGIES"
+  to = "ARCHEAN MOTION"
+  relation = "shareholder_of"
+  pct = 100.0
+  as_of = "2018-12-31"
+  status = "CONFIRMED"
+  doc = "63e9593d8be6eb9f9d257ed2"
+  page = 21
+  lines = ["ARCHEAN MOTION", { text = "100.00", nth = 2 }, "AVENIDA FONTES PEREIRA DE MELO", "LISBOA"]
+  says = "Same form: ARCHEAN MOTION, Lisbon, held at 100 %."
+
+  [[group.edge]]
+  from = "Xavier AUMONT"
+  to = "HADEAN"
+  relation = "shareholder_of"
+  shares = 17066
+  shares_total = 23138
+  as_of = "2019-06-28"
+  status = "CONFIRMED"
+  doc = "649cf63c032157154504a24e"
+  page = 16
+  lines = ["M. Xavier AUMONT", { text = "17 066", nth = 1 }, "23 138"]
+  says = "Attendance sheet of HADEAN's general meeting of 28 June 2019: 17,066 of 23,138 shares."
+
+  [[group.edge]]
+  from = "AIR SYSTEM SERVICE"
+  to = "HADEAN"
+  relation = "shareholder_of"
+  shares = 1836
+  shares_total = 23138
+  as_of = "2019-06-28"
+  status = "CONFIRMED"
+  note = "Entered on 30 April 2008 by subscribing 1,836 new HADEAN shares for EUR 100,000 (HADEAN filing 63f0a89c7a07a2434c069137, page 24, which gives RCS Montauban 352 890 354)."
+  doc = "649cf63c032157154504a24e"
+  page = 16
+  lines = ["la SOciété AIR SYSTEM SERVICE", { text = "1 836", nth = 1 }, "23 138"]
+  says = "Same sheet: 1,836 of 23,138 shares, represented by Serge DUMAS."
+
+  [[group.edge]]
+  from = "CHANGE BY FIDSO"
+  to = "HADEAN"
+  relation = "shareholder_of"
+  shares = 1120
+  shares_total = 23138
+  as_of = "2019-06-28"
+  status = "CONFIRMED"
+  doc = "649cf63c032157154504a24e"
+  page = 16
+  lines = ["La Société CHANGE BY FIDSO,", { text = "1 120", nth = 1 }, "Représentée par M. Franck GICQUEL", "RGS Bordeaux 505 295 196", "23 138"]
+  says = "Same sheet: 1,120 of 23,138 shares, represented by Franck GICQUEL."
+
+  [[group.edge]]
+  from = "Franck GICQUEL"
+  to = "HADEAN"
+  relation = "shareholder_of"
+  shares = 720
+  shares_total = 23138
+  as_of = "2019-06-28"
+  status = "CONFIRMED"
+  doc = "649cf63c032157154504a24e"
+  page = 16
+  lines = [{ text = "M. Franck GICQUEL", nth = 1 }, { text = "720", nth = 1 }, "23 138"]
+  says = "Same sheet: 720 of 23,138 shares."
+
+  [[group.edge]]
+  from = "Michel CAPGRAS"
+  to = "HADEAN"
+  relation = "shareholder_of"
+  shares = 2396
+  shares_total = 23138
+  as_of = "2019-06-28"
+  status = "CONFIRMED"
+  note = "Listed as deceased, with no vote. His 2,396 shares were bought back and cancelled on 6 April 2022."
+  doc = "649cf63c032157154504a24e"
+  page = 16
+  lines = ["M. Michel CAPGRAS, décédé", "2 396", "23 138"]
+  says = "Same sheet: 2,396 of 23,138 shares."
+
+  [[group.edge]]
+  from = "ARCHEAN TECHNOLOGIES"
+  to = "ARCHEAN INTERNATIONAL"
+  relation = "contract_counterparty"
+  as_of = "2005-08-08"
+  status = "CONFIRMED"
+  note = "An agreement, not a holding."
+  doc = "63e9593b8be6eb9f9d257ec2"
+  page = 7
+  lines = ["connaissance d'un accord entre ARCHEAN TECHNOLOGIES", "et ARCHEAN INTERNATIONAL, en approuve les dispositions"]
+  says = "EGM of 8 August 2005: approval of an agreement between ARCHEAN TECHNOLOGIES and ARCHEAN INTERNATIONAL."
