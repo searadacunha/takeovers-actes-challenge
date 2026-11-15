@@ -106,6 +106,13 @@ def check(results: dict, schema: dict) -> list[str]:
         events[i] = e
         if not _is_date(e["event_date"]):
             errs.append(f"{i}: event_date {e['event_date']!r} is not YYYY-MM-DD")
+        bounds = [e.get("earliest_date"), e.get("event_date"), e.get("latest_date")]
+        for field in ("earliest_date", "latest_date"):
+            if e.get(field) is not None and not _is_date(e[field]):
+                errs.append(f"{i}: {field} {e[field]!r} is not YYYY-MM-DD")
+        dated = [d for d in bounds if d is not None and _is_date(d)]
+        if dated != sorted(dated):
+            errs.append(f"{i}: earliest_date <= event_date <= latest_date does not hold ({bounds})")
         x0, y0, x1, y1 = e["source"]["bbox"]
         if not (0 <= x0 < x1 <= 1 and 0 <= y0 < y1 <= 1):
             errs.append(f"{i}: bbox {e['source']['bbox']} is not a normalized top-left box")
@@ -126,6 +133,8 @@ def check(results: dict, schema: dict) -> list[str]:
                 errs.append(f"{tag}: caused_by {i!r} is not an event")
             elif _is_date(events[i]["event_date"]) and events[i]["event_date"] > s["as_of"]:
                 errs.append(f"{tag}: caused by {i}, dated after the state")
+            elif prev is not None and _is_date(events[i]["event_date"]) and events[i]["event_date"] < prev["as_of"]:
+                errs.append(f"{tag}: caused by {i}, dated before the previous state")
         evs = [events[i] for i in caused if i in events]
 
         held = {h["name"]: h.get("shares") for h in s["holders"]}
@@ -156,19 +165,23 @@ def check(results: dict, schema: dict) -> list[str]:
             if s["as_of"] < prev["as_of"]:
                 errs.append(f"{tag}: timeline is not in chronological order")
 
-        delta = sum(e["payload"]["amount_eur"] * (1 if e["event_code"] == INCREASE else -1)
-                    for e in evs if e["event_code"] in (INCREASE, DECREASE))
-        if prev is not None and capital - prev_capital != delta:
-            errs.append(f"{tag}: capital moves by {capital - prev_capital} but its capital events sum to {delta}")
+        # The official schema allows a null capital and a payload with only the official fields:
+        # a comparison is skipped when one of its terms is not documented, instead of raising.
+        amounts = [e["payload"].get("amount_eur") * (1 if e["event_code"] == INCREASE else -1)
+                   if e["payload"].get("amount_eur") is not None else None
+                   for e in evs if e["event_code"] in (INCREASE, DECREASE)]
+        if prev is not None and None not in (capital, prev_capital, *amounts) and capital - prev_capital != sum(amounts):
+            errs.append(f"{tag}: capital moves by {capital - prev_capital} but its capital events sum to {sum(amounts)}")
         for code, got in ((ENTRY, set(held) - before), (END, before - set(held))):
             declared = {e["payload"]["holder_name"] for e in evs if e["event_code"] == code}
             if declared != got:
                 errs.append(f"{tag}: {code} events {sorted(declared)} != holder change {sorted(got)}")
 
         ratio = (s.get("corporate_action") or {}).get("ratio", 1)
-        issued = sum(e["payload"]["shares_issued"] for e in evs if e["event_code"] == INCREASE) \
-            - sum(e["payload"]["shares_cancelled"] for e in evs if e["event_code"] == DECREASE)
-        if prev is not None and None not in (total, prev_total) and total != prev_total * ratio + issued:
+        moves = [e["payload"].get("shares_issued") for e in evs if e["event_code"] == INCREASE] \
+            + [None if e["payload"].get("shares_cancelled") is None else -e["payload"]["shares_cancelled"]
+               for e in evs if e["event_code"] == DECREASE]
+        if prev is not None and None not in (total, prev_total, *moves) and total != prev_total * ratio + sum(moves):
             errs.append(f"{tag}: shares_total moves without a matching issue, cancellation or split")
         if prev is not None and not s.get("restated"):
             for name in sorted(set(held) | before):

@@ -1,6 +1,7 @@
 """results.json against the official schema and the business rules. No corpus needed."""
 import copy
 import json
+import re
 
 import pytest
 
@@ -153,6 +154,22 @@ def edge_without_evidence(r):
     del r["group"]["edges"][1]["source"]
 
 
+def _event(r, event_id):
+    return next(e for e in r["events"] if e["event_id"] == event_id)
+
+
+def increase_before_previous_state(r):  # the 2018 increase moved before the 2017 buy-back state
+    _event(r, "E39")["event_date"] = "2017-01-01"
+
+
+def inverted_bounds(r):
+    _event(r, "E24").update(earliest_date="2008-06-27", latest_date="2007-09-07")
+
+
+def week_date_bound(r):
+    _event(r, "E28")["latest_date"] = "2010-W48-2"
+
+
 @pytest.mark.parametrize("mutate, expected", [
     (dup_event, "duplicate event_id"),
     (dangling, "is not an event"),
@@ -174,8 +191,70 @@ def edge_without_evidence(r):
     (edge_to_nowhere, "endpoint is not a node"),
     (guessed_siren, "resolved without a SIREN"),
     (edge_without_evidence, "no valid evidence box"),
+    (increase_before_previous_state, "dated before the previous state"),
+    (inverted_bounds, "earliest_date <= event_date <= latest_date"),
+    (week_date_bound, "latest_date '2010-W48-2' is not YYYY-MM-DD"),
 ])
 def test_validator_catches(results, schema, mutate, expected):
     broken = copy.deepcopy(results)
     mutate(broken)
     assert any(expected in e for e in check(broken, schema)), check(broken, schema)
+
+
+def test_validator_reports_instead_of_raising_on_schema_valid_input(results, schema):
+    """The official schema allows a null capital and a CAPITAL_INCREASE payload with only its official fields."""
+    no_capital = copy.deepcopy(results)
+    no_capital["capital_timeline"][-1]["capital_eur"] = None
+    assert isinstance(check(no_capital, schema), list)
+    official_payload = copy.deepcopy(results)
+    e = _event(official_payload, "E39")
+    e["payload"] = {k: e["payload"][k] for k in ("amount_eur", "capital_after_eur", "method")}
+    assert isinstance(check(official_payload, schema), list)
+
+
+def _printed(n, text):
+    """n appears in text as a whole number, written 64655, 64 655, 64.655 or with a non-breaking space."""
+    forms = {str(n)} | {f"{n:,}".replace(",", sep) for sep in (" ", ".", " ", " ")}
+    return any(re.search(rf"(?<![\d.,]){re.escape(f)}(?![\d])", text) for f in forms)
+
+
+def test_confirmed_states_hold_only_stated_counts(results):
+    """CONFIRMED is "stated by a filing": every holding of a CONFIRMED state is printed in a box it cites."""
+    by_id = {e["event_id"]: e for e in results["events"]}
+    for s in results["capital_timeline"]:
+        if s["status"] != "CONFIRMED":
+            continue
+        cited = [x["snippet"] for x in s.get("evidence", [])]
+        for i in s["caused_by"]:
+            cited += [src["snippet"] for src in [by_id[i]["source"], *by_id[i].get("supporting_sources", [])]]
+        text = " ".join(cited)
+        for h in s["holders"]:
+            if h["shares"] is not None and h["shares"] != s["shares_total"]:
+                assert _printed(h["shares"], text), (s["state_id"], h["name"], h["shares"])
+
+
+def test_status_follows_the_evidence(results):
+    for e in results["events"]:
+        if e["payload"].get("grounding") == "indirect":
+            assert e["status"] != "CONFIRMED", e["event_id"]
+    for s in results["capital_timeline"]:
+        if any(h["shares"] is None for h in s["holders"]):
+            assert s["status"] == "UNRESOLVED", s["state_id"]
+
+
+def test_entry_and_exit_counts_match_the_timeline(results):
+    """An entry's shares are held in the state it creates; an exit's shares were held in the state before."""
+    states = results["capital_timeline"]
+    position = {i: n for n, s in enumerate(states) for i in s["caused_by"]}
+    for e in results["events"]:
+        p = e["payload"]
+        if e["event_code"] in ("SHAREHOLDER_ENTRY", "SHAREHOLDER_END") and p.get("shares") is not None:
+            n = position[e["event_id"]] - (e["event_code"] == "SHAREHOLDER_END")
+            held = {h["name"]: h["shares"] for h in states[n]["holders"]}
+            assert held[p["holder_name"]] == p["shares"], e["event_id"]
+
+
+def test_fund_entries_are_bounded_by_their_first_naming(results):
+    """The four funds are first named on 21 February 2017; an earlier bound would rest on an assumption."""
+    for i in ("E30", "E31", "E32", "E33"):
+        assert _event(results, i)["latest_date"] >= "2017-02-21", i
