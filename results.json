@@ -1068,8 +1068,8 @@
         "snippet": "64 655 actions - à FPCI SECURITE"
       },
       "status": "SUPPORTED",
-      "date_precision": "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed.",
-      "latest_date": "2010-11-30"
+      "date_precision": "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited and the latest documented bound; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed. Under that assumption the entry is complete by 30 November 2010 (see E29).",
+      "latest_date": "2017-02-21"
     },
     {
       "event_id": "E31",
@@ -1095,8 +1095,8 @@
         "snippet": "43 103 actions - à FPCI FINANCIERE DE BRIENNE"
       },
       "status": "SUPPORTED",
-      "date_precision": "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed.",
-      "latest_date": "2010-11-30"
+      "date_precision": "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited and the latest documented bound; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed. Under that assumption the entry is complete by 30 November 2010 (see E29).",
+      "latest_date": "2017-02-21"
     },
     {
       "event_id": "E32",
@@ -1122,8 +1122,8 @@
         "snippet": "30 172 actions - à GALIA VENTURE"
       },
       "status": "SUPPORTED",
-      "date_precision": "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed.",
-      "latest_date": "2010-11-30"
+      "date_precision": "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited and the latest documented bound; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed. Under that assumption the entry is complete by 30 November 2010 (see E29).",
+      "latest_date": "2017-02-21"
     },
     {
       "event_id": "E33",
@@ -1149,8 +1149,8 @@
         "snippet": "12 931 actions - à FIP GALIA PME 4"
       },
       "status": "SUPPORTED",
-      "date_precision": "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed.",
-      "latest_date": "2010-11-30"
+      "date_precision": "Inferred. The fund is first named in the buy-back list of 21 February 2017, which is the box cited and the latest documented bound; the 2008 extract does not name the subscribers. Dating its entry with the 2008 issue assumes that no B share changed hands between 2008 and 2017; no such transfer is filed. Under that assumption the entry is complete by 30 November 2010 (see E29).",
+      "latest_date": "2017-02-21"
     },
     {
       "event_id": "E34",
@@ -1653,8 +1653,8 @@
         "E14"
       ],
       "state_id": "S05",
-      "status": "CONFIRMED",
-      "note": "After the reserved increase, dated by its decision: subscriptions stayed open until 16 November 2006, so this state exists once they are completed, not on the evening of 20 October. The third resolution reserves 330, 150 and 20 shares by name. That AUMONT and GICQUEL took theirs up is confirmed by their 2007 contributions (742 and 80); for BLANCO MARINA it follows from the increase being completed in full.",
+      "status": "SUPPORTED",
+      "note": "After the reserved increase, dated by its decision: subscriptions stayed open until 16 November 2006, so this state exists once they are completed, not on the evening of 20 October. The third resolution reserves 330, 150 and 20 shares by name. That AUMONT and GICQUEL took theirs up is confirmed by their 2007 contributions (742 and 80); for BLANCO MARINA it follows from the increase being completed in full. No filing states the counts 967, 953 and 80: they are the attendance sheet plus the reservation, hence SUPPORTED.",
       "evidence": [
         {
           "inpi_id": "63e9593b8be6eb9f9d257ec7",
@@ -2027,7 +2027,7 @@
       ],
       "state_id": "S13",
       "status": "CONFIRMED",
-      "note": "Last change of capital in the corpus. The 2059-F tax forms for the years ended 31 December 2018 to 2024 all show HADEAN with 400,000 shares, and the minutes of 24 June 2024 (deposited on 2 December 2025) still state a capital of EUR 400,000.",
+      "note": "Last change of capital in the corpus. The 2059-F tax forms for the years ended 31 December 2018 to 2024 all show HADEAN with 400,000 shares, and the minutes of 24 June 2024 (deposited on 2 December 2025) still state a capital of EUR 400,000. Those minutes adopt each resolution \"à l'unanimité des voix des associés\", plural, although the tax forms show a sole shareholder: read as boilerplate wording.",
       "evidence": [
         {
           "inpi_id": "63e9593b8be6eb9f9d257ec0",

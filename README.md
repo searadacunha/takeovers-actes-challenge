@@ -21,7 +21,7 @@ that only the previous minutes describe. The task is to replay those changes fro
 | S02 | 2005-05-17 | 150 000 | 1 500 x 100 | Aumont, Blanco Marina, Gicquel, Guellati, Leroux, Roujean: counts not documented | UNRESOLVED |
 | S03 | 2005-08-16 | 150 000 | 1 500 x 100 | Blanco Marina 823 (54.87 %), Aumont 617 (41.13 %), Gicquel 60 (4 %) | UNRESOLVED |
 | S04 | 2006-10-20 | 150 000 | 1 500 x 100 | Blanco Marina 803 (53.53 %), Aumont 637 (42.47 %), Gicquel 60 (4 %) | CONFIRMED |
-| S05 | 2006-10-20 | 200 000 | 2 000 x 100 | Aumont 967 (48.35 %), Blanco Marina 953 (47.65 %), Gicquel 80 (4 %) | CONFIRMED |
+| S05 | 2006-10-20 | 200 000 | 2 000 x 100 | Aumont 967 (48.35 %), Blanco Marina 953 (47.65 %), Gicquel 80 (4 %) | SUPPORTED |
 | S06 | 2006-10-20 | 200 000 | 2 000 x 100 | Blanco Marina 953 (47.65 %), Aumont 742 (37.1 %), Capgras 225 (11.25 %), Gicquel 80 (4 %) | SUPPORTED |
 | S07 | 2007-09-07 | 200 000 | 2 000 x 100 | Blanco Marina 953 (47.65 %), HADEAN 822 (41.1 %), Capgras 225 (11.25 %) | SUPPORTED |
 | S08 | 2008-04-30 | 200 000 | 2 000 x 100 | HADEAN 1 047 (52.35 %), Blanco Marina 953 (47.65 %) | SUPPORTED |
@@ -41,7 +41,7 @@ Each event and each state carries a `status`:
 - **UNRESOLVED**: the documents are insufficient or contradict each other.
 - REFUTED is used in notes only, for a figure the documents themselves disprove.
 
-28 events are CONFIRMED and 11 SUPPORTED. 7 states are CONFIRMED, 4 SUPPORTED, 2 UNRESOLVED. A state is
+28 events are CONFIRMED and 11 SUPPORTED. 6 states are CONFIRMED, 5 SUPPORTED, 2 UNRESOLVED. A state is
 SUPPORTED as soon as one of its lines is inferred, or carried forward from an older filing, rather than
 stated for that date.
 
@@ -88,7 +88,9 @@ These are in `notes` and in the `note` / `restated` fields of the states concern
     May 2005, although he holds 60 shares before and after. The two reports of the commissioner for
     special benefits give different caps for the A dividend. The 2008 minutes split the B-share premium
     into two amounts that add up to the whole price plus ten cents. The 2017 buy-back excess is charged
-    to the share premium by the meeting and to other reserves by the president.
+    to the share premium by the meeting and to other reserves by the president. The minutes of
+    24 June 2024 adopt each resolution "à l'unanimité des voix des associés", plural, while the tax forms
+    show HADEAN as sole shareholder: read as boilerplate.
 
 ## Three decisions that shape the timeline
 
@@ -129,12 +131,14 @@ be exact, precision matters more than automation. What is automatic, and reusabl
 is everything around the ledger:
 
 - `actes detect` flags the pages worth reading (61 of 293) and the test suite checks that every page cited as an event's main source is among them.
-- It also parses every sentence that states a capital change or level (49 of them), and compares each
+- It also parses the sentences its patterns recognise as a capital change or level (49 of them; a
+  sentence the patterns miss is not cross-checked), and compares each
   with the replayed timeline: 34 corroborate an event, 13 state a level the timeline goes through,
   2 contradict it. Those 2 are the 185 759 above. An unexplained sentence fails the tests.
-- `validate.py` re-derives every transition from `results.json` alone and catches 20 kinds of
+- `validate.py` re-derives every transition from `results.json` alone and catches 23 kinds of
   corruption that the tests inject (a transfer that changes the capital, a contribution counted twice,
-  a seller who keeps his shares, an ownership cycle, a pixel box, a guessed SIREN...).
+  a seller who keeps his shares, an ownership cycle, a pixel box, a guessed SIREN, an event dated
+  before the previous state...).
 
 ## Run it
 
@@ -152,7 +156,7 @@ python -m actes detect           # pages flagged, capital sentences cross-checke
 python -m actes build            # ledger -> results.json, refused if schema or invariants fail
 python -m actes proofs           # every cited box drawn on its page by the official bbox_viewer.py
 python -m actes lines <inpi_id> <page>   # OCR lines of a page with their normalized boxes
-pytest                           # 56 tests collected; 8 corpus tests skip without the files
+pytest                           # 64 tests collected; 8 corpus tests skip without the files
 ```
 
 ## What is verified, and how
@@ -161,10 +165,10 @@ pytest                           # 56 tests collected; 8 corpus tests skip witho
 |---|---|---|
 | official schema | `jsonschema` Draft 2020-12 on `schema/results.schema.json` | pass |
 | event ids unique, `caused_by` resolves, each event used by exactly one state | `validate.py` | pass |
-| dates valid, chronological, no event after its state | `validate.py` | pass |
+| dates valid and chronological: each event between the previous state and its own, inside its `earliest_date` / `latest_date` | `validate.py` | pass |
 | shares add up, percentages recomputed, capital = shares x nominal | `validate.py`, 13 states | pass |
 | capital only moves with a capital event, holders only change with an entry or exit | `validate.py` | pass |
-| per-holder conservation across every transition | `validate.py` | pass |
+| per-holder conservation across every transition except S03 to S04, which is restated (item 1) | `validate.py` | pass |
 | every document and page exists | 85 sources against the corpus | pass |
 | each snippet is the OCR text inside its box | read back without the grounding code | pass |
 | same boxes as the official viewer's conversion | every OCR line of every cited page | pass |
@@ -174,6 +178,10 @@ pytest                           # 56 tests collected; 8 corpus tests skip witho
 | boxes looked at on the rendered page (by the agent) | 36 of the 85 proof images, across scans, A4 pages and tax forms | all on target |
 
 A valid JSON is not a correct cap table. The schema is the first line of the table, not the argument.
+
+The GitHub Actions job runs the 56 tests that need no corpus, on `main` and `submission`. The 8 corpus
+tests (the document, snippet, box and ink rows above) need the 382 MB corpus: they run locally after
+`scripts/fetch_corpus.sh`.
 
 ## Bonus: the group
 
@@ -257,7 +265,7 @@ percentage and found no wrong figure, no missing capital movement and no unsuppo
 returned 21 findings, all accepted: statuses and dates stated more firmly than the documents allow, and
 three inconsistencies the first pass had missed (items 8, 9 and the premium split in item 10).
 
-**What was checked, and by whom.** By the agent: the 46 tests, and 36 proof images looked at one by
+**What was checked, and by whom.** By the agent: the tests (46 then, 64 today), and 36 proof images looked at one by
 one. By me: I have not re-read the 17 filings line by line. Every figure here is machine-read and
 machine-checked. The proof images exist so that anyone, including me, can check a box in seconds.
 
